@@ -64,6 +64,7 @@ service ntpd start
 curl -Ls -o /etc/yum.repos.d/ambari.repo ${AMBARI_REPO}
 
 # Install Oracle JDK required for PHD
+yum -y remove java*
 yum -y install https://s3.amazonaws.com/phd3.repo/jdk-7u67-linux-x64.rpm
 
 # install Apache Ambari-agent
