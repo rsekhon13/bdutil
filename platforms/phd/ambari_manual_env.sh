@@ -46,7 +46,7 @@ INSTALL_JDK_DEVEL=true
 JAVA_HOME=/etc/alternatives/java_sdk
 
 ## import configuration overrides
-import_env platforms/hdp/ambari.conf
+import_env platforms/phd/ambari.conf
 
 ## Version of Ambari and location of YUM package repository
 AMBARI_VERSION="${AMBARI_VERSION:-1.7.0}"
@@ -73,14 +73,14 @@ AMBARI_API="http://localhost:8080/api/v1"
 AMBARI_CURL='curl -su admin:admin -H X-Requested-By:ambari'
 MASTER_UI_PORTS=('8080')
 
-import_env platforms/hdp/ambari_functions.sh
+import_env platforms/phd/ambari_functions.sh
 
 if [[ -n "${BDUTIL_DIR}" ]]; then
   UPLOAD_FILES+=(
     "${BDUTIL_DIR}/libexec/hadoop_helpers.sh"
-    "${BDUTIL_DIR}/platforms/hdp/configuration.json"
-    "${BDUTIL_DIR}/platforms/hdp/resources/public-hostname-gcloud.sh"
-    "${BDUTIL_DIR}/platforms/hdp/resources/thp-disable.sh"
+    "${BDUTIL_DIR}/platforms/phd/configuration.json"
+    "${BDUTIL_DIR}/platforms/phd/resources/public-hostname-gcloud.sh"
+    "${BDUTIL_DIR}/platforms/phd/resources/thp-disable.sh"
   )
 fi
 
@@ -89,15 +89,15 @@ COMMAND_GROUPS+=(
      libexec/mount_disks.sh
      libexec/install_java.sh
      libexec/setup_hadoop_user.sh
-     platforms/hdp/install_ambari.sh
+     platforms/phd/install_ambari.sh
   "
 
   "install-gcs-connector-on-ambari:
-     platforms/hdp/install_gcs_connector_on_ambari.sh
+     platforms/phd/install_gcs_connector_on_ambari.sh
   "
 
   "update-ambari-config:
-     platforms/hdp/update_ambari_config.sh
+     platforms/phd/update_ambari_config.sh
   "
 )
 

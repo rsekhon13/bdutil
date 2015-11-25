@@ -52,12 +52,19 @@ cat > /etc/sysctl.d/50-swappiness.conf <<-'EOF'
 vm.swappiness=0
 EOF
 
+# MIKE: likely bad idea on production system
+sysctl -w vm.overcommit_memory=1
+echo "vm.overcommit_memory=1" >> /etc/sysctl.conf
+
 ## install & start ntpd
 yum install ntp -y
 service ntpd start
 
 # install Apache Ambari YUM repository
 curl -Ls -o /etc/yum.repos.d/ambari.repo ${AMBARI_REPO}
+
+# Install Oracle JDK required for PHD
+yum -y install https://s3.amazonaws.com/phd3.repo/jdk-7u67-linux-x64.rpm
 
 # install Apache Ambari-agent
 yum install ambari-agent -y
@@ -80,8 +87,12 @@ chkconfig ambari-agent on
 # install, configure and start Apache ambari-server on the master node
 if [ "$(hostname)" = "${MASTER_HOSTNAME}" ]; then
   yum install -y ambari-server
+  # MIKE: add two Java files
+  ( cd /var/lib/ambari-server/resources/ && curl -O https://s3.amazonaws.com/phd3.repo/jdk-7u67-linux-x64.tar.gz )
+  ( cd /var/lib/ambari-server/resources/ && curl -O https://s3.amazonaws.com/phd3.repo/UnlimitedJCEPolicyJDK7.zip )
   service ambari-server stop
-  ambari-server setup -j ${JAVA_HOME} -s
+  #ambari-server setup -j ${JAVA_HOME} -s
+  ambari-server setup
   if ! nohup bash -c "service ambari-server start 2>&1 > /dev/null"; then
     echo 'Ambari Server failed to start' >&2
     exit 1
@@ -105,3 +116,4 @@ AMBARI_COPY_TARBALLS_SCRIPT="${AMBARI_LIB_BASE}/${AMBARI_FUNCTIONS_DIR}/dynamic_
 if [[ -e ${AMBARI_COPY_TARBALLS_SCRIPT} ]]; then
   sed -i "s/${SCRIPT_BAD_CONDITION}//" ${AMBARI_COPY_TARBALLS_SCRIPT}
 fi
+

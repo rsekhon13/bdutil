@@ -24,11 +24,11 @@
 ########################################################################
 
 # Import the base Ambari installation
-import_env platforms/hdp/ambari_manual_env.sh
+import_env platforms/phd/ambari_manual_env.sh
 
 # The distribution to install on your cluster.
-AMBARI_STACK="${AMBARI_STACK:-HDP}"
-AMBARI_STACK_VERSION="${AMBARI_STACK_VERSION:-2.2}"
+AMBARI_STACK="${AMBARI_STACK:-PHD}"
+AMBARI_STACK_VERSION="${AMBARI_STACK_VERSION:-3.0}"
 
 ## The components of that distribution to install on the cluster.
 # Default is all but Apache Knox.
@@ -38,13 +38,13 @@ AMBARI_SERVICES="${AMBARI_SERVICES:-FALCON FLUME GANGLIA HBASE HDFS HIVE KAFKA
 
 if [[ -n "${BDUTIL_DIR}" ]]; then
   UPLOAD_FILES+=(
-    "${BDUTIL_DIR}/platforms/hdp/create_blueprint.py"
+    "${BDUTIL_DIR}/platforms/phd/create_blueprint.py"
   )
 fi
 
 COMMAND_GROUPS+=(
   "install-ambari-components:
-     platforms/hdp/install_ambari_components.sh
+     platforms/phd/install_ambari_components.sh
   "
 )
 
@@ -53,3 +53,4 @@ COMMAND_STEPS+=(
   'install-gcs-connector-on-ambari,install-gcs-connector-on-ambari'
   'update-ambari-config,*'
 )
+

@@ -24,7 +24,7 @@
 ########################################################################
 
 # Import the base Ambari installation
-import_env platforms/hdp/ambari_manual_env.sh
+import_env platforms/phd/ambari_manual_env.sh
 
 COMMAND_STEPS=(
   'install-gcs-connector-on-ambari,install-gcs-connector-on-ambari'
