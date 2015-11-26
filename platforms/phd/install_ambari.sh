@@ -63,9 +63,16 @@ service ntpd start
 # install Apache Ambari YUM repository
 curl -Ls -o /etc/yum.repos.d/ambari.repo ${AMBARI_REPO}
 
+# Install all the .repo files
+curl https://s3.amazonaws.com/phd3.repo/etc_yum.repos.d.tar.gz | tar -C /etc -xzvf -
+
+# (Try to) ensure they're not writable
+chmod -w /etc/yum.repos.d/*.repo
+
 # Install Oracle JDK required for PHD
 yum -y remove java*
 yum -y install https://s3.amazonaws.com/phd3.repo/jdk-7u67-linux-x64.rpm
+export JAVA_HOME="/usr/java/latest"
 
 # install Apache Ambari-agent
 yum install ambari-agent -y
@@ -92,8 +99,7 @@ if [ "$(hostname)" = "${MASTER_HOSTNAME}" ]; then
   ( cd /var/lib/ambari-server/resources/ && curl -O https://s3.amazonaws.com/phd3.repo/jdk-7u67-linux-x64.tar.gz )
   ( cd /var/lib/ambari-server/resources/ && curl -O https://s3.amazonaws.com/phd3.repo/UnlimitedJCEPolicyJDK7.zip )
   service ambari-server stop
-  #ambari-server setup -j ${JAVA_HOME} -s
-  ambari-server setup
+  ambari-server setup -j ${JAVA_HOME} -s
   if ! nohup bash -c "service ambari-server start 2>&1 > /dev/null"; then
     echo 'Ambari Server failed to start' >&2
     exit 1
