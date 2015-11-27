@@ -63,6 +63,31 @@ service ntpd start
 # install Apache Ambari YUM repository
 curl -Ls -o /etc/yum.repos.d/ambari.repo ${AMBARI_REPO}
 
+# Taken from the platforms/mapr/ stuff.  Essential to get HAWQ initialized and running.
+function update_ssh_config() {
+	echo "  updating SSH configuration"
+
+	SSHD_CONFIG=/etc/ssh/sshd_config
+
+	# allow ssh via keys (some virtual environments disable this)
+  sed -i 's/#AuthorizedKeysFile/AuthorizedKeysFile/' $SSHD_CONFIG
+
+	# allow roaming (GCE disabled this in 2014 ... for unknown reasons)
+  sed -i 's/^#[ ]*HostbasedAuthentication.*/HostbasedAuthentication yes/g' $SSHD_CONFIG
+
+	# For Dev Clusters ONLY !!!
+	#	allow ssh password prompt (only for our dev clusters)
+	#	root login via passwordless ssh
+  sed -i 's/ChallengeResponseAuthentication .*no$/ChallengeResponseAuthentication yes/' $SSHD_CONFIG
+  sed -i 's/PasswordAuthentication .*no$/PasswordAuthentication yes/' $SSHD_CONFIG
+  sed -i 's/PermitRootLogin .*no$/PermitRootLogin yes/' $SSHD_CONFIG
+
+	[ -x /etc/init.d/ssh ]   &&  /etc/init.d/ssh  restart
+	[ -x /etc/init.d/sshd ]  &&  /etc/init.d/sshd restart
+}
+
+update_ssh_config
+
 # Install all the .repo files
 curl https://s3.amazonaws.com/phd3.repo/etc_yum.repos.d.tar.gz | tar -C /etc -xzvf -
 
