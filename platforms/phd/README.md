@@ -1,9 +1,9 @@
-# ![Hortonworks Data Platform](http://hortonworks.com/wp-content/themes/hortonworks/images/layout/header/hortonworks-logo.png) + ![Google Cloud Platform](https://cloud.google.com/_static/images/gcp-logo.png)
+# ![Pivotal HD](https://s3.amazonaws.com/phd3.repo/Pivotal_WhiteOnTeal.png) + ![Google Cloud Platform](https://cloud.google.com/_static/images/gcp-logo.png)
 
-Hortonworks Data Platform (HDP) on Google Cloud Platform
-========================================================
+Pivotal Hadoop (PHD) on Google Cloud Platform
+=============================================
 
-This extension, to Google's [bdutil](https://github.com/GoogleCloudPlatform/bdutil), provides support for deploying the [Hortonworks Data Platform](http://hortonworks.com/) with a single command.
+This extension, to Google's [bdutil](https://github.com/GoogleCloudPlatform/bdutil), provides support for deploying [Pivotal HD](http://pivotal.io/big-data/pivotal-hd) with a single command.
 
 The extension utilizes Apache Ambari's Blueprint Recommendations to fully configure the cluster without the need for manual configuration.
 
@@ -32,7 +32,7 @@ Before you start
 
 * Open https://console.developers.google.com/
 * Open 'Create Project' and fill in the details.
-  - As an example, this document uses 'hdp-00'
+  - As an example, this document uses 'phd-00'
 - Within the project, open 'APIs & auth -> APIs'. Then enable:
   - Google Compute Engine
   - Google Cloud Storage
@@ -45,8 +45,8 @@ Before you start
 
   ```
   gcloud auth login                   ## authenticate to Google cloud
-  gcloud config set project hdp-00    ## set the default project
-  gsutil mb -p hdp-00 gs://hdp-00     ## create a cloud storage bucket
+  gcloud config set project phd-00    ## set the default project
+  gsutil mb -p phd-00 gs://phd-00     ## create a cloud storage bucket
   ```
 
 #### Download bdutil
@@ -61,14 +61,14 @@ Quick start
 
 1. Deploy or Delete the cluster: __see './bdutil --help' for more details__
 
-* Deploy: `./bdutil -e platforms/hdp/ambari_env.sh deploy`
-* Delete: `./bdutil -e platforms/hdp/ambari_env.sh delete`
+* Deploy: `./bdutil -e platforms/phd/ambari_env.sh deploy`
+* Delete: `./bdutil -e platforms/phd/ambari_env.sh delete`
   * when deleting, ensure to use the same switches/configuration as the deploy
 
 Configuration
 -------------
 
-* You can deploy without setting any configuration, but you should have a look at `platforms/hdp/ambari.conf`
+* You can deploy without setting any configuration, but you should have a look at `platforms/phd/ambari.conf`
 
 Here are some of the defaults to consider:
 
@@ -121,7 +121,7 @@ c. Or open a firewall rule from the Google Cloud Platform control panel
 
 #### Use the cluster
 
-You now have a full HDP cluster. If you are new to Hadoop check the tutorials at http://hortonworks.com/.
+You now have a full PHD cluster. If you are new to Hadoop check the tutorials at http://hortonworks.com/.
 
 For command-line based jobs, 'bdutil' gives methods for passing through commands: https://cloud.google.com/hadoop/running-a-mapreduce-job
 
@@ -134,11 +134,11 @@ Questions
 
 For adding/overriding Hadoop configurations, update `configuration.json` and then  use the extension as documented. And contribute back if you think the defaults should be changed.
 
-### Can I deploy HDP manually using Ambari and/or use my own Ambari Blueprints?
+### Can I deploy PHD manually using Ambari and/or use my own Ambari Blueprints?
 
-Yes. Set `ambari_manual_env.sh` as your environment _(with the -e switch)_ instead of `ambari_env.sh`. That will configure Ambari across the cluster & handle all HDP prerequisites, but not trigger the Ambari Blueprints which install HDP.
+Yes. Set `ambari_manual_env.sh` as your environment _(with the -e switch)_ instead of `ambari_env.sh`. That will configure Ambari across the cluster & handle all PHD prerequisites, but not trigger the Ambari Blueprints which install PHD.
 
-After manually deploying your cluster, you can use `./bdutil <YOUR_FLAGS> -e platforms/hdp/ambari_manual_post_deploy_env.sh run_command_steps` to configure HDFS directories and install the GCS connector. Note it uses `run_command_steps` instead of `deploy`.
+After manually deploying your cluster, you can use `./bdutil <YOUR_FLAGS> -e platforms/phd/ambari_manual_post_deploy_env.sh run_command_steps` to configure HDFS directories and install the GCS connector. Note it uses `run_command_steps` instead of `deploy`.
 
 ### Can I re-use the attached persistent disk(s) across deployments?
 
@@ -152,7 +152,7 @@ The basic commands are below. Find more detail in [TEST.md](./TEST.md).
 
 ## delete the cluster but don't delete the disks
 export DELETE_ATTACHED_PDS_ON_DELETE=false
-./bdutil -e platforms/hdp/ambari_env.sh delete
+./bdutil -e platforms/phd/ambari_env.sh delete
 
 ## create with existing disks
 export CREATE_ATTACHED_PDS_ON_DEPLOY=false
@@ -176,9 +176,9 @@ The rest of the system resides on the **local boot disk**, unless configured oth
 
 ### Can I deploy in the Google Cloud Platform _Free Trial_ ?
 
-You may use bdutil with HDP by lowering the machine type & count below the recommended specifications. To use the default configuration, upgrade the account from a free trial.
+You may use bdutil with PHD by lowering the machine type & count below the recommended specifications. To use the default configuration, upgrade the account from a free trial.
 
-  * In 'platforms/hdp/ambari.conf':
+  * In 'platforms/phd/ambari.conf':
     * `GCE_MACHINE_TYPE='n1-standard-2'`
     * `WORKERS=3 # or less`
   * Or at the command-line provide these switches to the 'deploy' & 'delete':
@@ -198,3 +198,4 @@ License
 -------
 
 [Apache License, Version 2.0](../../LICENSE)
+
