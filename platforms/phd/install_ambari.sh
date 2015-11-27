@@ -56,11 +56,6 @@ EOF
 sysctl -w vm.overcommit_memory=1
 echo "vm.overcommit_memory=1" >> /etc/sysctl.conf
 
-# MIKE: for HAWQ, add gpadmin user so that the temp file path can be chowned to it
-useradd -c "HAWQ/HDB DBA user" -g hadoop -m -s /bin/bash gpadmin
-mkdir -p /mnt/pd1/tmp
-chown gpadmin: /mnt/pd1/tmp
-
 ## install & start ntpd
 yum install ntp -y
 service ntpd start
